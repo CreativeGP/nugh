@@ -1,0 +1,234 @@
+{
+    "global": {
+	"attr": [
+	    "accesskey", "class", "contextmenu",
+	    "dir", "dropzone", "id",
+	    "itemid", "itemprop", "itemref",
+	    "itemscope", "itemtype", "lang",
+	    "style", "title", "translate",
+	    "contenteditable", "draggable", "hidden",
+	    "spellcheck", "tabindex"
+	]
+    },
+
+    "img": {
+	"content_categories": ["flow", "phrasing", "embedded", "palpable"],
+	"allowed_contents": [],
+	"ommision": ["req_beg", "den_end"],
+	"permitted_parents": "any",
+	"permitted_ARIA_roles": "any",
+	"dom_interface": "HTMLImageElement",
+	"attr": {
+	    "alt": { "type": "string" },
+	    "crossorigin": { "type": "enum", "enums": ["anonymous", "use-credentials"] },
+	    "height": { "type": "int" },
+	    "ismap": { "type": "boolean" },
+	    "longdesc": { "type": "string" },
+	    "referrerpolicy": { "type": "enum", "enums": ["no-referrer", "no-referrer-when-downgrade", "origin", "origin-when-cross-origin", "unsafe-url"] },
+	    "sizes": { "type": "boolean" },
+	    "ismap": { "type": "boolean" },
+	    "src": { "type": "string" },
+	    "srcset": { "type": "string" },
+	    "width": { "type": "int" },
+	    "usemap": { "type": "string" }
+	}
+    },
+
+    "button": {
+	"content_categories": ["flow", "phrasing", "interactive", "listed", "labelable", "submittable_form_associated", "palpable"],
+	"allowed_contents": ["phrasing"],
+	"ommision": ["req_beg", "req_end"],
+	"permitted_parents": ["phrasing"],
+	"permitted_ARIA_roles": ["checkbox", "link", "menuitem", "menuitemcheckbox", "menuitemradio", "radio", "switch", "tab"],
+	"dom_interface": "HTMLButtonElement",
+	"attr": {
+	    "autofocus": { "type": "boolean" },
+	    "disabled": { "type": "boolean" },
+	    "form": { "type": "id" },
+	    "formaction": { "type": "uri" },
+	    "formenctype": { "type": "enum", "enums": ["application/x-www-form-urlencoded", "multipart/form-data", "text/plain"] },
+	    "formmethod": { "type": "enum", "enums": ["post", "get"] },
+	    "formnovalidate": { "type": "boolean" },
+	    "formtarget": { "type": "string" },
+	    "name": { "type": "string" },
+	    "type": { "type": "enum", "enums": ["submit", "button", "menu", "reset"] },
+	    "value": { "type": "string" }
+	}
+    },
+
+    "textarea": {
+	"content_categories": ["flow", "phrasing", "interactive", "listed", "labelable", "resettable", "submittable_form_associated", "palpable"],
+	"allowed_contents": ["text"],
+	"ommision": ["req_beg", "req_end"],
+	"permitted_parents": ["phrasing"],
+	"permitted_ARIA_roles": "none",
+	"dom_interface": "HTMLTextAreaElement",
+	"attr": {
+	    "autocapitalize": { "type": "enum", "enums": ["none", "centences", "words", "characters"] },
+	    "autocomlete": { "type": "enum", "enums": ["on", "off"] },
+	    "autofocus": { "type": "boolean" },
+	    "cols": { "type": "int" },
+	    "disabled": { "type": "boolean" },
+	    "form": { "type": "id" },
+	    "maxlength": { "type": "int" },
+	    "minlength": { "type": "int" },
+	    "name": { "type": "string" },
+	    "placeholder": { "type": "string" },
+	    "readonly": { "type": "boolean" },
+	    "required": { "type": "boolean" },
+	    "rows": { "type": "int" },
+	    "selectionDirection": { "type": "enum", "enums": ["none", "forward", "backword"] },
+	    "selectionEnd": { "type": "int" },
+	    "selectionEnd": { "type": "int" },
+	    "spellcheck": { "type": "enum", "enums": ["default", "true", "false"] },
+	    "wrap": { "type": "enum", "enums": ["hard", "soft"] }
+	}
+    },
+
+    "input": {
+	"content_categories": ["flow", "listed", "submittable", "resettable", "labelable", "form_associated", "phrasing"],
+	"allowed_contents": [],
+	"ommision": ["req_beg", "req_end"],
+	"permitted_parents": ["phrasing"],
+	"permitted_ARIA_roles": ["none"],
+	"dom_interface": "HTMLTextAreaElement",
+	"attr": {
+	    "type": { "type": "enum",
+		      "enums": ["button", "checkbox", "color", "date",
+				"datetime-local", "email", "file", "hidden",
+				"file", "image", "month", "number", "password",
+				"radio", "range", "reset", "search", "submit",
+				"tel", "text", "time", "url", "week"] },
+	    "autocomlete": { "type": "enum", "enums": ["on", "off", "name", "honorific-frefix", "given-name", "additional-name", "family-name", "honorific-suffix",
+						       "nickname", "email", "username", "new-password", "current-password", "organization-title", "organization",
+						       "street-address", "adress-line1", "addres-line2", "address-line3", "address-level4", "address-level3", "address-level1",
+						       "country", "country-name", "postal-code", "cc-namde", "cc-given-name", "cc-additional-name", "cc-family-name",
+						       "cc-number", "cc-exp", "cc-exp-month", "cc-exp-year", "cc-csd", "cc-type", "transaction-currancy", "transaction-amount",
+						       "language", "bday", "dbay-day", "bday-month", "bday-year", "sex", "tel", "url", "photo",
+						       "tel-country-code", "tel-national", "tel-area-code", "tel-local", "tel-local-prefix", "tel-local-suffix", "tel-extension"
+						      ] },
+	    "autofocus": { "type": "boolean" },
+	    "capture": { "type": "boolean",
+			 "enable-list": ["type:file", "type:radio", "type:checkbox"]
+		       },
+	    "disabled": { "type": "boolean" },
+	    "form": { "type": "id" },
+	    "formaction": { "type": "uri",
+			    "enable-list": ["type:submit", "type:image"]
+			  },
+	    "formenctype": { "type": "enum",
+			     "enable-list": ["type:submit", "type:image"],
+			     "enums": ["application/x-www-form-urlencoded", "multipart/form-data", "text/plain"] },
+	    "formmethod": { "type": "enum",
+			    "enable-list": ["type:submit", "type:image"],
+			    "enums": ["post", "get"] },
+	    "formnovalidate": { "type": "boolean",
+			      	"enable-list": ["type:submit", "type:image"]
+			      },
+	    "formtarget": { "type": "string",
+			    "enable-list": ["type:submit", "type:image"]
+			  },
+	    "height": { "type": "int",
+		      	"enable-list": ["type:image"]
+		      },
+	    "inputmode": { "type": "enum",
+			   "enable-list": ["type:text", "type:password", "type:email", "type:url"],
+			   "enums": [
+			       "verbatim", "latin", "latin-name", "latin-prose", "full-width-latin",
+			       "kana", "katakana", "numeric", "tel", "email", "url"]},
+	    "list": {
+		"type": "id",
+		"disable-list": ["type:hidden", "type:checkbox", "type:radio", "type:file", "type:button", "type:submit"]
+	    },
+	    "max": { "type": "int" },
+	    "maxlength": {
+		"type": "int",
+		"enable-list": ["type:text", "type:email", "type:search", "type:password", "type:tel", "type:url"]
+	    },
+	    "min": { "type": "int" },
+	    "minlength": {
+		"type": "int",
+		"enable-list": ["type:text", "type:email", "type:search", "type:password", "type:tel", "type:url"]
+	    },
+	    "multiple": {
+		"type": "boolean",
+		"enable-list": ["type:email", "type:file"]
+	    },
+	    "name": { "type": "string" },
+	    "pattern": {
+		"type": "regex",
+		"enable-list": ["type:text", "type:search", "type:tel", "type:url", "type:email", "type:password"]
+	    },
+	    "placeholder": { "type": "string" },
+	    "readonly": {
+		"type": "boolean",
+		"disable-list": ["type:hidden", "type:range", "type:color", "type:checkbox", "type:radio", "type:file", "type:button", "type:submit"]
+	    },
+	    "required": {
+		"type": "boolean",
+		"disable-list": ["type:hidden", "type:image", "type:reset", "type:button", "type:submit"]
+	    },
+	    "selectionDirection": { "type": "enum", "enums": ["none", "forward", "backword"] },
+	    "selectionStart": { "type": "int" },
+	    "selectionEnd": { "type": "int" },
+	    "size": {
+		"type": "int",
+		"enable-list": ["type:text", "type:search", "type:tel", "type:url", "type:email", "type:password"]
+	    },
+	    "spellcheck": { "type": "enum", "enums": ["default", "true", "false"] },
+	    "src": {
+		"type": "uri",
+		"enable-list": ["type:image"]
+	    },
+	    "step": { "type": "string" },
+	    "value": {
+		"type": "string",
+		"disable-list": ["type:radio", "type:checkbox"]
+	    },
+	    "width": {
+		"type": "int",
+		"enable-list": ["type:image"]
+	    }
+	}
+    },
+    
+    "div": {
+	"content_categories": ["flow", "palpable", "interactive", "listed", "labelable", "resettable", "submittable_form_associated", "palpable"],
+	"allowed_contents": ["flow"],
+	"ommision": ["req_beg", "req_end"],
+	"permitted_parents": ["flow"],
+	"permitted_ARIA_roles": "any",
+	"dom_interface": "HTMLDivElement",
+	"attr": {
+	}
+    },
+
+    "span": {
+	"content_categories": ["flow", "phrasing"],
+	"allowed_contents": ["phrasing"],
+	"ommision": ["req_beg", "req_end"],
+	"permitted_parents": ["phrasing", "flow"],
+	"permitted_ARIA_roles": "any",
+	"dom_interface": "HTMLSpanElement",
+	"attr": {
+	}
+    },
+
+    "select": {
+	"content_categories": ["flow", "phrasing", "interactive", "listed", "labelable", "resettable", "submittable_form_associated"],
+	"allowed_contents": ["option", "optgroup"],
+	"ommision": ["req_beg", "req_end"],
+	"permitted_parents": ["phrasing"],
+	"permitted_ARIA_roles": "menu",
+	"dom_interface": "HTMLSelectElement",
+	"attr": {
+	    "autofocus": { "type": "boolean" },
+	    "disabled": { "type": "boolean" },
+	    "form": { "type": "id" },
+	    "multiple": { "type": "boolean" },
+	    "name": { "type": "string" },
+	    "required": { "type": "boolean" },
+	    "size": { "type": "int" }
+	}
+    }
+}
