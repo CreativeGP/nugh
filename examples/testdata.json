@@ -1,5 +1,8 @@
 {
     "global": {
+	"numtest": 32.35,
+	"booltest": true,
+	"nulltest": null,
 	"attr": [
 	    "accesskey", "class", "contextmenu",
 	    "dir", "dropzone", "id",
