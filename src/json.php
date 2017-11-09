@@ -10,7 +10,8 @@ require_once("meta.php");
 
 class NUGH_JsonLoader {
     public $stack = "";
-    public $mode = array("start");
+    public $mode = array(array("start"));
+    public $object = array();
 
     public function _tokenize($content) {
 	$tokens = array();
@@ -28,6 +29,7 @@ class NUGH_JsonLoader {
 		|| strin($stack, "]"))
 	    {
 		array_push($tokens, $stack);
+		$faststack = "";
 		$stack = "";
 	    }
 	    $stack .= $content[$i];
@@ -37,14 +39,81 @@ class NUGH_JsonLoader {
 	return $tokens;
     }
 
-    public function load($content) {
-	#         $this->stack .= $content;
 
+    public function &_get_object() {
+	$key = "";
+	$res = &$this->object;
+	foreach ($this->mode as $value) {
+	    if ($value[0] == "key") $key = $value[1];
+	    if ($value[0] == "map" && $key != "") {
+		$res = $res[$key];
+	    }
+	}
+	return $res;
+    }
+
+    
+    public function deal_with_token($token) {
+	$splitted = str_split($token);
+	if ((true
+	  && strlen($token) > 1
+	  && (false
+	   || end($splitted) == ":"
+	   || end($splitted) == ","
+	   || end($splitted) == "{"
+	   || end($splitted) == "}"
+	   || end($splitted) == "["
+	   || end($splitted) == "]")))
+	{
+	    $this->deal_with_token(substr($token, 0, strlen($token)-1));
+	    $this->deal_with_token(substr($token, strlen($token)-1, 1));
+	    return;
+	}
+
+	println($token);
+
+	switch ($token) {
+	    case "{":
+		$obj = &$this->_get_object();
+		if (end($this->mode)[0] != "start") {
+		    $obj[end($this->mode)[1]] = array();
+		    var_dump($obj);
+		    print_r($this->object);
+		    array_push($this->mode, array("map"));
+		}
+		print_r($this->mode);
+		break;
+	    case "}":
+	    case "]":
+		array_pop($this->mode);
+		array_pop($this->mode);
+		break;
+	    case ",":
+		array_pop($this->mode);
+		break;
+	    case "[":
+		array_push($this->mode, array("list"));
+		break;
+	    default:
+		if (preg_match('/^".*"/', $token)) {
+		    $string = substr($token, 1, strlen($token)-2);
+		    if (end($this->mode)[0] == "map" || end($this->mode)[0] == "start") {
+			// key
+			array_push($this->mode, array("key", $string));
+		    }
+		    else
+		    {
+			// value
+			//			array_push($this->object, array(end($this->mode)[1] => NULL));
+		    }
+		}
+	}
+    }
+
+    public function load($content) {
 	$tokens = $this->_tokenize($content);
 	$oldstack = $this->stack;
-	#	echo "oldstack ".$oldstack."\n";
 	$this->stack .= array_pop($tokens);
-	#	echo "stack ".$this->stack."\n";
 
 	if (false
 	    || odd(substr_count($oldstack, '"'))
@@ -55,9 +124,9 @@ class NUGH_JsonLoader {
 	    || strin($oldstack, "[")
 	    || strin($oldstack, "]"))
 	{
-	    echo $oldstack."\n";
+	    $go = $this->_tokenize($oldstack);
+	    foreach($go as $value): $this->deal_with_token($value); endforeach;
 	    $this->stack = substr($this->stack, strlen($oldstack));
-	    #	    $this->stack = "";
 	}
 	else {
 	    if (count($tokens) == 0) return;
@@ -72,25 +141,33 @@ class NUGH_JsonLoader {
 		 || strin($candidate, "}")
 		 || strin($candidate, "[")
 		 || strin($candidate, "]")
-		)
-		/* && (false
-		   || strin($candidate, ",")
-		   || strin($candidate, ":"))*/)
+		))
 	    {
-		echo $candidate." s\n";
+		$go = $this->_tokenize($candidate);
+		foreach($go as $value): $this->deal_with_token($value); endforeach;
 		$this->stack = substr($this->stack, strlen($oldstack));
 		unset($tokens[0]);
 	    }
 	}
 
 	foreach ($tokens as $value) {
-	    echo $value." v\n";
+	    $go = $this->_tokenize($value);
+	    foreach($go as $v): $this->deal_with_token($v); endforeach;
 	}
-	#	echo "stack ".$this->stack."\n";
     }
 }
 
 $content = file_get_contents('../examples/testdata.json');
+
+$content = <<<EOM
+{
+"Tom": {
+"age": 16,
+"friends": { "Amy":32, "Tomy":35 }
+}
+}
+EOM;
+
 $content = smoothing($content);
 
 $jl = new NUGH_JsonLoader();
@@ -98,4 +175,5 @@ for ($i = 0; $i < strlen($content); $i += $inv) {
     $inv = rand(0, 10);
     $jl->load(substr($content, $i, $inv));
 }
+print_r($jl->object);
 ?>
