@@ -12,8 +12,13 @@ class NUGH_JsonLoader {
     public $stack = "";
     public $mode = array(array("start"));
     public $object = array();
+    private $_iters = array();
 
-    public function _tokenize($content) {
+    function __construct() {
+	$this->_iters[] = &$this->object;
+    }
+
+    private function _tokenize($content) {
 	$tokens = array();
 	$stack = "";
 	$faststack = "";
@@ -39,19 +44,6 @@ class NUGH_JsonLoader {
 	return $tokens;
     }
 
-
-    public function &_get_object() {
-	$key = "";
-	$res = &$this->object;
-	foreach ($this->mode as $value) {
-	    if ($value[0] == "key") $key = $value[1];
-	    if ($value[0] == "map" && $key != "") {
-		$res = $res[$key];
-	    }
-	}
-	return $res;
-    }
-
     
     public function deal_with_token($token) {
 	$splitted = str_split($token);
@@ -74,11 +66,11 @@ class NUGH_JsonLoader {
 
 	switch ($token) {
 	    case "{":
-		$obj = &$this->_get_object();
 		if (end($this->mode)[0] != "start") {
-		    $obj[end($this->mode)[1]] = array();
-		    var_dump($obj);
+		    $last_iter = &$this->_iters[count($this->_iters)-1];
+		    $last_iter[end($this->mode)[1]] = array();
 		    print_r($this->object);
+		    $this->_iters[] = &$last_iter[end($this->mode)[1]];
 		    array_push($this->mode, array("map"));
 		}
 		print_r($this->mode);
@@ -87,9 +79,11 @@ class NUGH_JsonLoader {
 	    case "]":
 		array_pop($this->mode);
 		array_pop($this->mode);
+		array_pop($this->_iters);
 		break;
 	    case ",":
-		array_pop($this->mode);
+		if (end($this->mode)[0] == "key")
+		    array_pop($this->mode);
 		break;
 	    case "[":
 		array_push($this->mode, array("list"));
@@ -97,6 +91,8 @@ class NUGH_JsonLoader {
 	    default:
 		if (preg_match('/^".*"/', $token)) {
 		    $string = substr($token, 1, strlen($token)-2);
+		    echo 'this->mode';
+		    print_r($this->mode);
 		    if (end($this->mode)[0] == "map" || end($this->mode)[0] == "start") {
 			// key
 			array_push($this->mode, array("key", $string));
@@ -163,7 +159,9 @@ $content = <<<EOM
 {
 "Tom": {
 "age": 16,
-"friends": { "Amy":32, "Tomy":35 }
+"friends": { "Amy":32, "Tomy":35 },
+"friends2": { "friends3": { "Amy":32, "Tomy":35 },
+"Amy":32, "Tomy":35 }
 }
 }
 EOM;
