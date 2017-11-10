@@ -1,12 +1,13 @@
 <?php
 /*
    NUGH Loader - json.php
+
+   Supports streaming json loading.
    
    2017:11:07 (yyyy.mm.dd)
  */
 
 require_once("meta.php");
-
 
 class NUGH_JsonLoader {
     public $stack = "";
@@ -76,7 +77,7 @@ class NUGH_JsonLoader {
 	    return;
 	}
 
-	println($token);
+	//	println($token);
 
 	switch ($token) {
 	    case "{":
@@ -86,12 +87,12 @@ class NUGH_JsonLoader {
 		    // また記憶しておく。
 		    $last_iter = &$this->_iters[count($this->_iters)-1];
 		    $last_iter[end($this->mode)[1]] = array();
-		    print_r($this->object);
+		    //		    print_r($this->object);
 		    $this->_iters[] = &$last_iter[end($this->mode)[1]];
 
 		    array_push($this->mode, array("map")); // モードに追加
 		}
-		print_r($this->mode);
+		//		print_r($this->mode);
 		break;
 	    case "}":
 	    case "]":
@@ -109,7 +110,7 @@ class NUGH_JsonLoader {
 		// また記憶しておく。
 		$last_iter = &$this->_iters[count($this->_iters)-1];
 		$last_iter[end($this->mode)[1]] = array();
-		print_r($this->object);
+		//		print_r($this->object);
 		$this->_iters[] = &$last_iter[end($this->mode)[1]];
 
 		array_push($this->mode, array("list")); // モードに追加
@@ -119,8 +120,8 @@ class NUGH_JsonLoader {
 	    default:
 		if (preg_match('/^".*"/', $token)) {
 		    $string = substr($token, 1, strlen($token)-2);
-		    echo 'this->mode';
-		    print_r($this->mode);
+		    //		    echo 'this->mode';
+		    //		    print_r($this->mode);
 		    if (end($this->mode)[0] == "map" || end($this->mode)[0] == "start") {
 			// key
 			array_push($this->mode, array("key", $string));
@@ -136,7 +137,7 @@ class NUGH_JsonLoader {
 		} else {
 		    $last_iter = &$this->_iters[count($this->_iters)-1];
 		    if (end($this->mode)[0] == "list")
-			$last_iter[] = $string;
+			$last_iter[] = $this->_special_token($token);
 		    else
 			$last_iter[end($this->mode)[1]] = $this->_special_token($token);
 		}
@@ -188,28 +189,14 @@ class NUGH_JsonLoader {
 	    foreach($go as $v): $this->deal_with_token($v); endforeach;
 	}
     }
-}
 
-$content = file_get_contents('../examples/testdata.json');
-
-$content = <<<EOM
-{
-"Tom": {
-"address": "Hokkaido",
-"age": null,
-"friend-list": [ "Amy", "Tomy" ],
-"friends2": { "friends3": { "Amy":32, "Tomy":35 },
-"Amy":32, "Tomy":35 }
+    public static function streaming_load($url, $inv=100) {
+	$jl = new NUGH_JsonLoader();
+	for ($i = 0; $i < filesize($url); $i += $inv) {
+	    $content = file_get_contents($url, NULL, NULL, $i, $inv);
+	    $jl->load(smoothing($content));
+	}
+	return $jl->object;
+    }
 }
-}
-EOM;
-
-$content = smoothing($content);
-
-$jl = new NUGH_JsonLoader();
-for ($i = 0; $i < strlen($content); $i += $inv) {
-    $inv = rand(0, 10);
-    $jl->load(substr($content, $i, $inv));
-}
-print_r($jl->object);
 ?>
