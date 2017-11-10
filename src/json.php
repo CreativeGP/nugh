@@ -44,6 +44,20 @@ class NUGH_JsonLoader {
 	return $tokens;
     }
 
+
+    private function _special_token($token) {
+	switch ($token) {
+	    case "null":
+		return NULL;
+	    case "true":
+		return true;
+	    case "false":
+		return false;
+	    default:
+		return $token;
+	}
+    }
+
     
     public function deal_with_token($token) {
 	$splitted = str_split($token);
@@ -92,6 +106,8 @@ class NUGH_JsonLoader {
 	    case "[":
 		array_push($this->mode, array("list"));
 		break;
+	    case ":":
+		break;
 	    default:
 		if (preg_match('/^".*"/', $token)) {
 		    $string = substr($token, 1, strlen($token)-2);
@@ -104,12 +120,13 @@ class NUGH_JsonLoader {
 		    else
 		    {
 			// value
-			echo 'a';
 			$last_iter = &$this->_iters[count($this->_iters)-1];
 			$last_iter[end($this->mode)[1]] = $string;
 		    }
 		} else {
-		    
+		    $last_iter = &$this->_iters[count($this->_iters)-1];
+		    $last_iter[end($this->mode)[1]] =
+			$this->_special_token($token);
 		}
 	}
     }
@@ -167,7 +184,7 @@ $content = <<<EOM
 {
 "Tom": {
 "address": "Hokkaido",
-"age": 32,
+"age": null,
 "friends": { "Amy":32, "Tomy":35 },
 "friends2": { "friends3": { "Amy":32, "Tomy":35 },
 "Amy":32, "Tomy":35 }
