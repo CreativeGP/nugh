@@ -67,11 +67,15 @@ class NUGH_JsonLoader {
 	switch ($token) {
 	    case "{":
 		if (end($this->mode)[0] != "start") {
+		    // NOTE: いま追加すべき配列の別名が$last_iterなので、
+		    // それに新しい配列を入れる。そして新しく追加した配列の別名を
+		    // また記憶しておく。
 		    $last_iter = &$this->_iters[count($this->_iters)-1];
 		    $last_iter[end($this->mode)[1]] = array();
 		    print_r($this->object);
 		    $this->_iters[] = &$last_iter[end($this->mode)[1]];
-		    array_push($this->mode, array("map"));
+
+		    array_push($this->mode, array("map")); // モードに追加
 		}
 		print_r($this->mode);
 		break;
@@ -100,8 +104,12 @@ class NUGH_JsonLoader {
 		    else
 		    {
 			// value
-			//			array_push($this->object, array(end($this->mode)[1] => NULL));
+			echo 'a';
+			$last_iter = &$this->_iters[count($this->_iters)-1];
+			$last_iter[end($this->mode)[1]] = $string;
 		    }
+		} else {
+		    
 		}
 	}
     }
@@ -158,7 +166,8 @@ $content = file_get_contents('../examples/testdata.json');
 $content = <<<EOM
 {
 "Tom": {
-"age": 16,
+"address": "Hokkaido",
+"age": 32,
 "friends": { "Amy":32, "Tomy":35 },
 "friends2": { "friends3": { "Amy":32, "Tomy":35 },
 "Amy":32, "Tomy":35 }
