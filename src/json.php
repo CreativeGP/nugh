@@ -104,7 +104,15 @@ class NUGH_JsonLoader {
 		    array_pop($this->mode);
 		break;
 	    case "[":
-		array_push($this->mode, array("list"));
+		// NOTE: いま追加すべき配列の別名が$last_iterなので、
+		// それに新しい配列を入れる。そして新しく追加した配列の別名を
+		// また記憶しておく。
+		$last_iter = &$this->_iters[count($this->_iters)-1];
+		$last_iter[end($this->mode)[1]] = array();
+		print_r($this->object);
+		$this->_iters[] = &$last_iter[end($this->mode)[1]];
+
+		array_push($this->mode, array("list")); // モードに追加
 		break;
 	    case ":":
 		break;
@@ -121,12 +129,16 @@ class NUGH_JsonLoader {
 		    {
 			// value
 			$last_iter = &$this->_iters[count($this->_iters)-1];
-			$last_iter[end($this->mode)[1]] = $string;
+			if (end($this->mode)[0] == "list")
+			    $last_iter[] = $string;
+			else $last_iter[end($this->mode)[1]] = $string;
 		    }
 		} else {
 		    $last_iter = &$this->_iters[count($this->_iters)-1];
-		    $last_iter[end($this->mode)[1]] =
-			$this->_special_token($token);
+		    if (end($this->mode)[0] == "list")
+			$last_iter[] = $string;
+		    else
+			$last_iter[end($this->mode)[1]] = $this->_special_token($token);
 		}
 	}
     }
@@ -185,7 +197,7 @@ $content = <<<EOM
 "Tom": {
 "address": "Hokkaido",
 "age": null,
-"friends": { "Amy":32, "Tomy":35 },
+"friend-list": [ "Amy", "Tomy" ],
 "friends2": { "friends3": { "Amy":32, "Tomy":35 },
 "Amy":32, "Tomy":35 }
 }
